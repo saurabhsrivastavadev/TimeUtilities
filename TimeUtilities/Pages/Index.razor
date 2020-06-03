@@ -1,7 +1,28 @@
 ﻿@page "/"
+@using System.Timers
 
-<h1>Hello, world!</h1>
+<h4>Time Constants</h4>
+<p>
+    <b>Unix Epoch: </b> @unixEpoch
+</p>
+<p>
+    <b>GPS Epoch: </b> @gpsEpoch
+</p>
+<br>
 
-Welcome to your new app.
+<h4>Current Time</h4>
+<p>
+    <b>UTC Now: </b> @utcNow
+</p>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<p>
+    <b>UTC Now Milliseconds: </b> @utcNowMillis
+</p>
+
+<p>
+    <b>UTC Now Seconds: </b> @(utcNowMillis/1000)
+</p>
+
+<p>
+    <b>GPS Now Seconds: </b> @(gpsNowMillis/1000)
+</p>
