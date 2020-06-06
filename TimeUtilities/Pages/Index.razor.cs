@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -6,12 +8,16 @@ namespace TimeUtilities.Pages
 {
     public partial class Index
     {
+        // Logger
+        [Microsoft.AspNetCore.Components.Inject]
+        private ILogger<Index> Logger { get; set; }
+
         // Constants 
         private readonly DateTime unixEpoch = DateTime.UnixEpoch;
         private readonly DateTime gpsEpoch = DateTime.Parse("6 January 1980");
         private readonly long gpsUtcEpochDeltaMillis;
         private readonly TimeZoneInfo tzInfo = TimeZoneInfo.Local;
-        private readonly Timer timer = new Timer(100);
+        private readonly System.Timers.Timer timer = new System.Timers.Timer(400);
 
         // Variables
         private DateTime utcNow;
@@ -25,8 +31,6 @@ namespace TimeUtilities.Pages
 
             timer.Elapsed += async (sender, e) => await TimerTick();
             timer.Start();
-
-            Console.WriteLine("Index page constructor !");
         }
 
         private Task TimerTick()

@@ -1,7 +1,9 @@
 ﻿@page "/"
-@using System.Timers
 
-<h4>Time Constants</h4>
+@using Microsoft.Extensions.Logging
+@inject ILogger<Index> loggerr
+
+<h3><BSBadge>Time Constants</BSBadge></h3>
 <p>
     <b>Unix Epoch: </b> @unixEpoch
 </p>
@@ -16,13 +18,20 @@
 </p>
 
 <p>
-    <b>UTC Now Milliseconds: </b> @utcNowMillis
+    <b>UTC Now Seconds: </b> @(utcNowMillis / 1000)
 </p>
 
 <p>
-    <b>UTC Now Seconds: </b> @(utcNowMillis/1000)
+    <b>GPS Now Seconds: </b> @(gpsNowMillis / 1000)
 </p>
 
-<p>
-    <b>GPS Now Seconds: </b> @(gpsNowMillis/1000)
-</p>
+<br />
+
+@code
+{
+    int clickedTimes = 0;
+    void Click(MouseEventArgs e)
+    {
+        Console.WriteLine($"Material button clicked {++clickedTimes} times");
+    }
+}
