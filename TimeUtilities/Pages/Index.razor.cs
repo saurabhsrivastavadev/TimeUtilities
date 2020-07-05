@@ -1,49 +1,80 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommonDateTimeUtils;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using TimeUtilities.Jsinterop;
 
 namespace TimeUtilities.Pages
 {
     public partial class Index
     {
-        // Logger
-        [Microsoft.AspNetCore.Components.Inject]
+        // Framework Injections
+        [Inject]
         private ILogger<Index> Logger { get; set; }
 
-        // Constants 
-        private readonly DateTime unixEpoch = DateTime.UnixEpoch;
-        private readonly DateTime gpsEpoch = DateTime.Parse("6 January 1980");
-        private readonly long gpsUtcEpochDeltaMillis;
-        private readonly TimeZoneInfo tzInfo = TimeZoneInfo.Local;
-        private readonly System.Timers.Timer timer = new System.Timers.Timer(400);
-
-        // Variables
-        private DateTime utcNow;
-        private DateTime gpsNow;
-        private long utcNowMillis;
-        private long gpsNowMillis;
-
-        public Index()
-        {
-            gpsUtcEpochDeltaMillis = (long)gpsEpoch.Subtract(unixEpoch).TotalMilliseconds;
-
-            timer.Elapsed += async (sender, e) => await TimerTick();
-            timer.Start();
+        [Inject]
+        private IJSRuntime JSR 
+        { 
+            set
+            {
+                JsInteropTimeUtils.JSR = value;
+            }
         }
 
-        private Task TimerTick()
+        private readonly System.Timers.Timer _uiRefreshTimer = new System.Timers.Timer(200);
+
+        // Fields
+        private DateTime _utcNow;
+        private DateTime _localNow;
+        private int _localTzOffset = -1;
+        private string _localTzName = "";
+
+        private string LocalTzOffsetStr
+        {
+            get
+            {
+                if (_localTzOffset == -1)
+                {
+                    return "NA";
+                }
+                else
+                {
+                    int hours = Math.Abs(_localTzOffset) / 60;
+                    int minutes = Math.Abs(_localTzOffset) % 60;
+                    // sign is reversed since we need to display with UTC
+                    string sign = _localTzOffset < 0 ? "+" : "-";
+                    return hours > 0 ?
+                        $"UTC ({sign}) {hours} hours and {minutes} minutes" :
+                        $"UTC ({sign}) {minutes} minutes";
+                }
+            }
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            Logger.LogInformation("OnInitializedAsync()");
+
+            _uiRefreshTimer.Elapsed += TimerTick;
+            _uiRefreshTimer.Start();
+
+            _localTzOffset = await JsInteropTimeUtils.Instance?.GetLocalTimezoneOffset();
+            _localTzName = await JsInteropTimeUtils.Instance?.GetLocalTimezoneName();
+
+            await base.OnInitializedAsync();
+        }
+
+        private void TimerTick(object sender, ElapsedEventArgs args)
         {
             // populate instance variables
-            utcNow = DateTime.UtcNow;
-            gpsNow = utcNow.Subtract(TimeSpan.FromMilliseconds(gpsUtcEpochDeltaMillis));
-            utcNowMillis = (long)utcNow.Subtract(unixEpoch).TotalMilliseconds;
-            gpsNowMillis = (long)gpsNow.Subtract(gpsEpoch).TotalMilliseconds;
+            _utcNow = DateTime.UtcNow;
+            _localNow = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(_localTzOffset));
 
             // update the UI
             this.StateHasChanged();
-            return Task.CompletedTask;
         }
     }
 }

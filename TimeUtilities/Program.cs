@@ -18,13 +18,17 @@ namespace TimeUtilities
             Console.WriteLine("Main() Entry");
 
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+            // Add root component
             builder.RootComponents.Add<App>("app");
 
+            // Add services 
             builder.Services.AddTransient(sp => new HttpClient {
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
             });
             builder.Services.AddBootstrapCss();
 
+            // Run the app 
             await builder.Build().RunAsync();
         }
     }

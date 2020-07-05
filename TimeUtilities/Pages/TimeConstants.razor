@@ -1,0 +1,12 @@
+﻿@page "/constants"
+@using CommonDateTimeUtils
+
+<p>
+    <h2><BSBadge>UTC Epoch</BSBadge></h2>
+    <h5>@string.Format("{0:yyyy MMM dd, hh:mm:ss tt}", DateTime.UnixEpoch)</h5>
+</p>
+
+<p>
+    <h2><BSBadge>GPS Epoch</BSBadge></h2>
+    <h5>@string.Format("{0:yyyy MMM dd, hh:mm:ss tt}", DateTimeConstants.GpsEpoch)</h5>
+</p>

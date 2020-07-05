@@ -1,37 +1,38 @@
 ﻿@page "/"
 
-@using Microsoft.Extensions.Logging
-@inject ILogger<Index> loggerr
+@using CommonDateTimeUtils
 
-<h3><BSBadge>Time Constants</BSBadge></h3>
-<p>
-    <b>Unix Epoch: </b> @unixEpoch
-</p>
-<p>
-    <b>GPS Epoch: </b> @gpsEpoch
-</p>
-<br>
+<div class="card text-white bg-dark mb-3" style="max-width: 22rem;">
+    <div class="card-header">
+        <h4>UTC Time</h4>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">
+            @string.Format("{0:yyyy MMM dd, dddd}", _utcNow) <br/>
+            <b>@string.Format("{0:hh:mm:ss tt}", _utcNow)</b>
+        </h5>
+        <p class="card-text">
+            <b>@((long)DateTimeNow.TimeSinceUtcEpoch.TotalSeconds)</b> seconds since UTC Epoch.<br />
+            Day Number <b>@_utcNow.DayOfYear</b> in @_utcNow.Year<br />
+            Week Number <b>@DateTimeNow.GetWeekOfYear(_utcNow)</b> in @_utcNow.Year<br />
+        </p>
+    </div>
+</div>
 
-<h4>Current Time</h4>
-<p>
-    <b>UTC Now: </b> @utcNow
-</p>
-
-<p>
-    <b>UTC Now Seconds: </b> @(utcNowMillis / 1000)
-</p>
-
-<p>
-    <b>GPS Now Seconds: </b> @(gpsNowMillis / 1000)
-</p>
-
-<br />
-
-@code
-{
-    int clickedTimes = 0;
-    void Click(MouseEventArgs e)
-    {
-        Console.WriteLine($"Material button clicked {++clickedTimes} times");
-    }
-}
+<div class="card text-white bg-info mb-3" style="max-width: 23rem;">
+    <div class="card-header">
+        <h4>Local Time (@_localTzName)</h4>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">
+            @string.Format("{0:yyyy MMM dd, dddd}", _localNow) <br />
+            <b>@string.Format("{0:hh:mm:ss tt}", _localNow)</b>
+        </h5>
+        <p class="card-text">
+            Timezone Name: <b>@_localTzName</b> <br />
+            Timezone Offset: <b>@LocalTzOffsetStr</b> <br/>
+            Day Number <b>@_localNow.DayOfYear</b> in @_localNow.Year<br />
+            Week Number <b>@DateTimeNow.GetWeekOfYear(_localNow)</b> in @_localNow.Year<br />
+        </p>
+    </div>
+</div>
