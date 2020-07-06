@@ -42,5 +42,15 @@ namespace TimeUtilities.Jsinterop
         {
             return await JSR.InvokeAsync<string>("getLocalTimezoneName");
         }
+
+        public async Task<bool> ShowPwaInstallPrompt()
+        {
+            return await JSR.InvokeAsync<bool>("showPwaInstallPrompt");
+        }
+
+        public async Task<bool> IsPwaInstalled()
+        {
+            return await JSR.InvokeAsync<bool>("isPwaInstalled");
+        }
     }
 }

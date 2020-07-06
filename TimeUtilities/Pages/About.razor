@@ -1,5 +1,9 @@
 ﻿@page "/about"
 
+@using TimeUtilities.Jsinterop
+
+@inject IJSRuntime JSR
+
 <h4>References</h4>
 <p><a href="https://en.wikipedia.org/wiki/ISO_8601">https://en.wikipedia.org/wiki/ISO_8601</a></p>
 
@@ -15,3 +19,47 @@
 Saurabh Srivastava
 <br />
 sobu86@outlook.com
+
+<br />
+<br />
+<br />
+
+<h4>Install TimeUtilities as a PWA</h4>
+@if (IsPwaInstalled)
+{
+    <button type="button" class="btn btn-success" style="min-width: 20em;">
+        TimeUtilities PWA is installed !
+        <br />
+        (Progressive Web App)
+    </button>
+}
+else
+{
+    <button type="button" class="btn btn-info" style="min-width: 20em;"
+            @onclick="InstallPwaButtonClick">
+        Trigger PWA Install
+        <br />
+        (Progressive Web App)
+    </button>
+}
+
+@code {
+
+    private bool IsPwaInstalled = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        JsInteropTimeUtils.JSR = JSR;
+        IsPwaInstalled = await JsInteropTimeUtils.Instance?.IsPwaInstalled();
+    }
+
+    private async Task InstallPwaButtonClick()
+    {
+        IsPwaInstalled = await JsInteropTimeUtils.Instance?.IsPwaInstalled();
+
+        if (!IsPwaInstalled)
+        {
+            JsInteropTimeUtils.Instance?.ShowPwaInstallPrompt();
+        }
+    }
+}
