@@ -7,9 +7,9 @@
   "theme_color": "#03173d",
   "icons": [
     {
-      "src": "hourglass.png",
+      "src": "hourglass-400.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "128x128 400x400"
     }
   ]
 }
