@@ -8,13 +8,19 @@
     </div>
     <div class="card-body">
         <h5 class="card-title">
-            @string.Format("{0:yyyy MMM dd, dddd}", _utcNow) <br/>
+            @string.Format("{0:yyyy MMM dd, dddd}", _utcNow) <br />
             <b>@string.Format("{0:hh:mm:ss tt}", _utcNow)</b>
         </h5>
         <p class="card-text">
             <b>@((long)DateTimeNow.TimeSinceUtcEpoch.TotalSeconds)</b> seconds since UTC Epoch.<br />
-            Day Number <b>@_utcNow.DayOfYear</b> in @_utcNow.Year<br />
-            Week Number <b>@DateTimeNow.GetWeekOfYear(_utcNow)</b> in @_utcNow.Year<br />
+            Day Number
+            <b>@_utcNow.DayOfYear / @DateTimeNow.GetDaysInYear(_utcNow.Year)</b> in @_utcNow.Year<br />
+            Week Number
+            <b>
+                @DateTimeNow.GetWeekOfYear(_utcNow)
+                / @DateTimeNow.GetWeeksInYear(_utcNow.Year)
+            </b>
+            in @_utcNow.Year<br />
         </p>
     </div>
 </div>
@@ -30,9 +36,17 @@
         </h5>
         <p class="card-text">
             Timezone Name: <b>@_localTzName</b> <br />
-            Timezone Offset: <b>@LocalTzOffsetStr</b> <br/>
-            Day Number <b>@_localNow.DayOfYear</b> in @_localNow.Year<br />
-            Week Number <b>@DateTimeNow.GetWeekOfYear(_localNow)</b> in @_localNow.Year<br />
+            Timezone Offset: <b>@LocalTzOffsetStr</b> <br />
+            Day Number
+            <b>@_localNow.DayOfYear / @DateTimeNow.GetDaysInYear(_localNow.Year)</b> in @_localNow.Year<br />
+            Week Number
+            <b>
+                @DateTimeNow.GetWeekOfYear(_localNow)
+                / @DateTimeNow.GetWeeksInYear(_localNow.Year)
+            </b>
+            in @_localNow.Year<br />
         </p>
     </div>
 </div>
+
+<TimezoneCard TimeZoneId="Africa/Abidjan"></TimezoneCard>
