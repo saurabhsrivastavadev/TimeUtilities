@@ -65,21 +65,23 @@ namespace TimeUtilities.Shared
             }
         }
 
-        protected override void OnInitialized()
+        protected override Task OnParametersSetAsync()
         {
-            base.OnInitialized();
+            Logger.LogInformation("TimezoneCard.OnParametersSetAsync()");
 
             // Set the local tz name and offset
             if (_timeZoneInfo == null)
             {
                 Logger.LogError("No timezone info set.");
-                return;
+            }
+            else
+            {
+                _localTzOffset = (int)_timeZoneInfo.BaseUtcOffset.TotalMinutes;
+                _localTzName = _timeZoneInfo.DisplayName;
+                _localNow = DateTime.UtcNow.Add(TimeSpan.FromMinutes(_localTzOffset));
             }
 
-            _localTzOffset = (int)_timeZoneInfo.BaseUtcOffset.TotalMinutes;
-            _localTzName = _timeZoneInfo.DisplayName;
-
-            _localNow = DateTime.UtcNow.Add(TimeSpan.FromMinutes(_localTzOffset));
+            return base.OnParametersSetAsync();
         }
 
         // Refresh the time fields in the card
