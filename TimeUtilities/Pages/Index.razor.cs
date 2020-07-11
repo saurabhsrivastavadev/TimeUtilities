@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -33,6 +36,9 @@ namespace TimeUtilities.Pages
         private int _localTzOffset = -1;
         private string _localTzName = "";
 
+        // List of timezone card displayed in this page
+        private IList<string> _timezoneIdList = new List<string>();
+
         private string LocalTzOffsetStr
         {
             get
@@ -45,8 +51,7 @@ namespace TimeUtilities.Pages
                 {
                     int hours = Math.Abs(_localTzOffset) / 60;
                     int minutes = Math.Abs(_localTzOffset) % 60;
-                    // sign is reversed since we need to display with UTC
-                    string sign = _localTzOffset < 0 ? "+" : "-";
+                    string sign = _localTzOffset < 0 ? "-" : "+";
                     return hours > 0 ?
                         $"UTC ({sign}) {hours} hours and {minutes} minutes" :
                         $"UTC ({sign}) {minutes} minutes";
@@ -64,6 +69,11 @@ namespace TimeUtilities.Pages
             _localTzOffset = await JsInteropTimeUtils.Instance?.GetLocalTimezoneOffset();
             _localTzName = await JsInteropTimeUtils.Instance?.GetLocalTimezoneName();
 
+            // temp code to add ten timezones
+            _timezoneIdList = 
+                TimeZoneInfo.GetSystemTimeZones().ToList().
+                    ConvertAll<string>((tz) => { return tz.DisplayName; }).GetRange(0,10);
+
             await base.OnInitializedAsync();
         }
 
@@ -71,7 +81,7 @@ namespace TimeUtilities.Pages
         {
             // populate instance variables
             _utcNow = DateTime.UtcNow;
-            _localNow = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(_localTzOffset));
+            _localNow = DateTime.UtcNow.Add(TimeSpan.FromMinutes(_localTzOffset));
 
             // update the UI
             this.StateHasChanged();

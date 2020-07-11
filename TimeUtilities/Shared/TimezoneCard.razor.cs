@@ -13,6 +13,9 @@ namespace TimeUtilities.Shared
         private ILogger<TimezoneCard> Logger { get; set; }
 
         [Parameter]
+        public EventCallback OnCloseButtonClicked { get; set; }
+
+        [Parameter]
         public string TimeZoneId
         {
             get
@@ -54,8 +57,7 @@ namespace TimeUtilities.Shared
                 {
                     int hours = Math.Abs(_localTzOffset) / 60;
                     int minutes = Math.Abs(_localTzOffset) % 60;
-                    // sign is reversed since we need to display with UTC
-                    string sign = _localTzOffset < 0 ? "+" : "-";
+                    string sign = _localTzOffset < 0 ? "-" : "+";
                     return hours > 0 ?
                         $"UTC ({sign}) {hours} hours and {minutes} minutes" :
                         $"UTC ({sign}) {minutes} minutes";
@@ -77,7 +79,7 @@ namespace TimeUtilities.Shared
             _localTzOffset = (int)_timeZoneInfo.BaseUtcOffset.TotalMinutes;
             _localTzName = _timeZoneInfo.DisplayName;
 
-            _localNow = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(_localTzOffset));
+            _localNow = DateTime.UtcNow.Add(TimeSpan.FromMinutes(_localTzOffset));
         }
 
         // Refresh the time fields in the card
@@ -86,7 +88,7 @@ namespace TimeUtilities.Shared
         // Better to leave the refresh on to the page hosting this component/s.
         public void RefreshUI()
         {
-            _localNow = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(_localTzOffset));
+            _localNow = DateTime.UtcNow.Add(TimeSpan.FromMinutes(_localTzOffset));
 
             // update the UI
             this.StateHasChanged();

@@ -1,9 +1,19 @@
 ﻿@using CommonDateTimeUtils
 @using Microsoft.Extensions.Logging
 
-<div class="card text-white bg-info mb-3" style="max-width: 23rem;">
-    <div class="card-header">
-        <h4>Timezone (@_localTzName)</h4>
+<div class="card text-white bg-info mb-3" style="max-width: 25rem;">
+    <div class="card-header container-fluid">
+        <div class="row">
+            <div class="col-md-10">
+                <h4>Timezone (@_localTzName)</h4>
+            </div>
+            <div class="col-md-2 float-right mt-1">
+                <button type="button" class="close" aria-label="Close"
+                        @onclick="OnCloseButtonClicked">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
     </div>
     <div class="card-body">
         <h5 class="card-title">
