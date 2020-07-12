@@ -72,15 +72,13 @@ namespace TimeUtilities.Pages
             // temp code to add some timezones
             _timezoneIdList =
                 TimeZoneInfo.GetSystemTimeZones().ToList().
-                    ConvertAll<string>((tz) => { return tz.DisplayName; }).GetRange(0,50);
+                    ConvertAll<string>((tz) => { return tz.DisplayName; }).GetRange(0,20);
 
             await base.OnInitializedAsync();
         }
 
         private void TimerTick(object sender, ElapsedEventArgs args)
         {
-            Logger.LogInformation("Index.TimerTick()");
-
             // populate instance variables
             _utcNow = DateTime.UtcNow;
             _localNow = DateTime.UtcNow.Add(TimeSpan.FromMinutes(_localTzOffset));

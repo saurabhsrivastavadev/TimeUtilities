@@ -1,41 +1,53 @@
 ﻿@using CommonDateTimeUtils
 @using Microsoft.Extensions.Logging
 
-@foreach (var tzInfo in _timeZoneInfoList)
-{
-    <div class="card text-white bg-info mb-3" style="max-width: 25rem;">
-        <div class="card-header container-fluid">
-            <div class="row">
-                <div class="col-md-10">
-                    <h4>Timezone (@tzInfo.DisplayName)</h4>
-                </div>
-                <div class="col-md-2 float-right mt-1">
-                    <button type="button" class="close" aria-label="Close"
-                            @onclick="() => { HandleCloseButtonClicked(tzInfo); }">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+<div class="container">
+    <div class="row">
+        @foreach (var tzInfo in _timeZoneInfoList)
+        {
+            <div class="col">
+                <div class="card text-white bg-info mb-3" style="min-width: 20rem; max-width: 25rem;">
+                    <div class="card-header container-fluid">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <h4>Timezone (@tzInfo.DisplayName)</h4>
+                            </div>
+                            <div class="col-md-2 float-right mt-1">
+                                <button type="button" class="close" aria-label="Close"
+                                        @onclick="() => { HandleCloseButtonClicked(tzInfo); }">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @string.Format("{0:yyyy MMM dd, dddd}", GetTimeNowForTimeZone(tzInfo)) <br />
+                            <b>@string.Format("{0:hh:mm:ss tt}", GetTimeNowForTimeZone(tzInfo))</b>
+                        </h5>
+                        <p class="card-text">
+                            Timezone Name: <b>@tzInfo.DisplayName</b> <br />
+                            Timezone Offset: <b>@GetTimeZoneOffsetString((int)tzInfo.BaseUtcOffset.TotalMinutes)</b> <br />
+                            Day Number
+                            <b>
+                                @GetTimeNowForTimeZone(tzInfo).DayOfYear /
+                                @DateTimeNow.GetDaysInYear(GetTimeNowForTimeZone(tzInfo).Year)
+                            </b>
+                            in @GetTimeNowForTimeZone(tzInfo).Year<br />
+                            Week Number
+                            <b>
+                                @DateTimeNow.GetWeekOfYear(GetTimeNowForTimeZone(tzInfo))
+                                / @DateTimeNow.GetWeeksInYear(GetTimeNowForTimeZone(tzInfo).Year)
+                            </b>
+                            in @GetTimeNowForTimeZone(tzInfo).Year<br />
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card-body">
-            <h5 class="card-title">
-                @string.Format("{0:yyyy MMM dd, dddd}", GetTimeNowForTimeZone(tzInfo)) <br />
-                <b>@string.Format("{0:hh:mm:ss tt}", GetTimeNowForTimeZone(tzInfo))</b>
-            </h5>
-            <p class="card-text">
-                Timezone Name: <b>@tzInfo.DisplayName</b> <br />
-                Timezone Offset: <b>@GetTimeZoneOffsetString((int)tzInfo.BaseUtcOffset.TotalMinutes)</b> <br />
-                Day Number
-                <b>@GetTimeNowForTimeZone(tzInfo).DayOfYear /
-                        @DateTimeNow.GetDaysInYear(GetTimeNowForTimeZone(tzInfo).Year)</b>
-                            in @GetTimeNowForTimeZone(tzInfo).Year<br />
-                Week Number
-                <b>
-                    @DateTimeNow.GetWeekOfYear(GetTimeNowForTimeZone(tzInfo))
-                    / @DateTimeNow.GetWeeksInYear(GetTimeNowForTimeZone(tzInfo).Year)
-                </b>
-                in @GetTimeNowForTimeZone(tzInfo).Year<br />
-            </p>
-        </div>
+        }
+
+        @* 2 empty columns just for layout experiment *@
+        <div class="col"></div>
+        <div class="col"></div>
     </div>
-}
+</div>

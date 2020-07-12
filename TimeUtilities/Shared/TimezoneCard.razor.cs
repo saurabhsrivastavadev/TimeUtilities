@@ -25,8 +25,6 @@ namespace TimeUtilities.Shared
 
         protected override Task OnParametersSetAsync()
         {
-            Logger.LogInformation("TimezoneCard.OnParametersSetAsync()");
-
             PopulateTimeZoneInfoList();
 
             // Set the local tz name and offset
