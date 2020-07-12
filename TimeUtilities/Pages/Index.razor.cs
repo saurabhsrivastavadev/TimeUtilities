@@ -20,15 +20,15 @@ namespace TimeUtilities.Pages
         private ILogger<Index> Logger { get; set; }
 
         [Inject]
-        private IJSRuntime JSR 
-        { 
+        private IJSRuntime JSR
+        {
             set
             {
                 JsInteropTimeUtils.JSR = value;
             }
         }
 
-        private readonly System.Timers.Timer _uiRefreshTimer = new System.Timers.Timer(200);
+        private readonly System.Timers.Timer _uiRefreshTimer = new System.Timers.Timer(250);
 
         // Fields
         private DateTime _utcNow;
@@ -69,16 +69,18 @@ namespace TimeUtilities.Pages
             _localTzOffset = await JsInteropTimeUtils.Instance?.GetLocalTimezoneOffset();
             _localTzName = await JsInteropTimeUtils.Instance?.GetLocalTimezoneName();
 
-            // temp code to add ten timezones
-            _timezoneIdList = 
+            // temp code to add some timezones
+            _timezoneIdList =
                 TimeZoneInfo.GetSystemTimeZones().ToList().
-                    ConvertAll<string>((tz) => { return tz.DisplayName; }).GetRange(0,10);
+                    ConvertAll<string>((tz) => { return tz.DisplayName; }).GetRange(0,50);
 
             await base.OnInitializedAsync();
         }
 
         private void TimerTick(object sender, ElapsedEventArgs args)
         {
+            Logger.LogInformation("Index.TimerTick()");
+
             // populate instance variables
             _utcNow = DateTime.UtcNow;
             _localNow = DateTime.UtcNow.Add(TimeSpan.FromMinutes(_localTzOffset));

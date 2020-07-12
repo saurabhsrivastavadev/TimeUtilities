@@ -13,87 +13,102 @@ namespace TimeUtilities.Shared
         private ILogger<TimezoneCard> Logger { get; set; }
 
         [Parameter]
-        public EventCallback OnCloseButtonClicked { get; set; }
+        public EventCallback<string> OnCloseButtonClicked { get; set; }
 
         [Parameter]
-        public string TimeZoneId
-        {
-            get
-            {
-                return _timeZoneId;
-            }
+        public IList<string> TimeZoneIdList { get; set; }
 
-            set
-            {
-                _timeZoneId = value;
+        [Parameter]
+        public string TimeZoneId { get; set; }
 
-                try
-                {
-                    _timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(_timeZoneId);
-                }
-                catch
-                {
-                    Logger.LogError($"Invalid timezone id {_timeZoneId}");
-                }
-            }
-        }
-
-        private string _timeZoneId;
-        private TimeZoneInfo _timeZoneInfo;
-
-        private DateTime _localNow;
-        private int _localTzOffset = -1;
-        private string _localTzName = "";
-
-        private string LocalTzOffsetStr
-        {
-            get
-            {
-                if (_localTzOffset == -1)
-                {
-                    return "NA";
-                }
-                else
-                {
-                    int hours = Math.Abs(_localTzOffset) / 60;
-                    int minutes = Math.Abs(_localTzOffset) % 60;
-                    string sign = _localTzOffset < 0 ? "-" : "+";
-                    return hours > 0 ?
-                        $"UTC ({sign}) {hours} hours and {minutes} minutes" :
-                        $"UTC ({sign}) {minutes} minutes";
-                }
-            }
-        }
+        private IList<TimeZoneInfo> _timeZoneInfoList = new List<TimeZoneInfo>();
 
         protected override Task OnParametersSetAsync()
         {
             Logger.LogInformation("TimezoneCard.OnParametersSetAsync()");
 
+            PopulateTimeZoneInfoList();
+
             // Set the local tz name and offset
-            if (_timeZoneInfo == null)
+            if (_timeZoneInfoList.Count == 0)
             {
                 Logger.LogError("No timezone info set.");
-            }
-            else
-            {
-                _localTzOffset = (int)_timeZoneInfo.BaseUtcOffset.TotalMinutes;
-                _localTzName = _timeZoneInfo.DisplayName;
-                _localNow = DateTime.UtcNow.Add(TimeSpan.FromMinutes(_localTzOffset));
             }
 
             return base.OnParametersSetAsync();
         }
 
-        // Refresh the time fields in the card
-        // We don't run a refresh timer within this component
-        //  since there would be multiple instances of this component.
-        // Better to leave the refresh on to the page hosting this component/s.
-        public void RefreshUI()
+        private DateTime GetTimeNowForTimeZone(TimeZoneInfo tzInfo)
         {
-            _localNow = DateTime.UtcNow.Add(TimeSpan.FromMinutes(_localTzOffset));
+            return DateTime.UtcNow.Add(TimeSpan.FromMinutes(
+                    (int)tzInfo.BaseUtcOffset.TotalMinutes));
+        }
 
-            // update the UI
-            this.StateHasChanged();
+        private string GetTimeZoneOffsetString(int timeZoneOffset)
+        {
+            if (timeZoneOffset == -1)
+            {
+                return "NA";
+            }
+            else
+            {
+                int hours = Math.Abs(timeZoneOffset) / 60;
+                int minutes = Math.Abs(timeZoneOffset) % 60;
+                string sign = timeZoneOffset < 0 ? "-" : "+";
+                return hours > 0 ?
+                    $"UTC ({sign}) {hours} hours and {minutes} minutes" :
+                    $"UTC ({sign}) {minutes} minutes";
+            }
+        }
+
+        private void PopulateTimeZoneInfoList()
+        {
+            _timeZoneInfoList.Clear();
+
+            if (!string.IsNullOrEmpty(TimeZoneId) &&
+                TimeZoneIdList != null && TimeZoneIdList.Count > 0)
+            {
+                Logger.LogError(
+                    "Both TimeZoneId and TimeZoneIdList parameters can't be set in TimezoneCard");
+                return;
+            }
+
+            // Both TimeZoneId and TimeZoneIdList parameters can't be set
+            if (!string.IsNullOrEmpty(TimeZoneId))
+            {
+                try
+                {
+                    _timeZoneInfoList.Add(TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId));
+                }
+                catch
+                {
+                    Logger.LogError($"Invalid timezone id {TimeZoneId}");
+                }
+            }
+            else
+            {
+                foreach (var tzId in TimeZoneIdList)
+                {
+                    try
+                    {
+                        _timeZoneInfoList.Add(TimeZoneInfo.FindSystemTimeZoneById(tzId));
+                    }
+                    catch
+                    {
+                        Logger.LogError($"Invalid timezone id {tzId}");
+                    }
+                }
+            }
+        }
+
+        private void HandleCloseButtonClicked(TimeZoneInfo tzInfo)
+        {
+            _timeZoneInfoList.Remove(tzInfo);
+
+            if (OnCloseButtonClicked.HasDelegate)
+            {
+                OnCloseButtonClicked.InvokeAsync(tzInfo.DisplayName);
+            }
         }
     }
 }

@@ -49,11 +49,44 @@
     </div>
 </div>
 
-<TimezoneCard TimeZoneId="Asia/Kolkata"></TimezoneCard>
 
-@foreach (string timezoneId in _timezoneIdList)
+@*
+    Performance metrics while using below for loop which creates a card component for each timezone.
+    Only 1.6 seconds idle in 21.5 seconds.
+    This is because of a large number of components that need to be rendered every time we update the
+    current time display for each timezone.
+        Range: 0 – 21.59 s
+        21590 ms
+        19191 msScripting
+        631 msRendering
+        74 msPainting
+        75 msSystem
+        1618 msIdle
+        21590 msTotal
+*@
+@*@foreach (var tz in _timezoneIdList)
 {
-    <TimezoneCard TimeZoneId="@timezoneId"
-                  OnCloseButtonClicked="@(() => { _timezoneIdList.Remove(timezoneId); })">
-    </TimezoneCard>
-}
+    <TimezoneCard TimeZoneId="@tz"
+                  OnCloseButtonClicked="(tzId) => { _timezoneIdList.Remove(tzId); }"></TimezoneCard>
+}*@
+
+@*
+    Performance metrics when using a single component, which internally lists all the same timezones
+    as above.
+    This is much better than the above approach of having a list of components.
+    8.5 seconds idle in 21.1 seconds.
+        Range: 0 – 21.19 s
+        21193 ms
+        11782 msScripting
+        575 msRendering
+        68 msPainting
+        181 msSystem
+        8587 msIdle
+        21193 msTotal
+
+    However this approach is also not ideal and it also has large scripting time.
+    What we need is a way to dynamically render only the components currently being displayed on screen.
+    TODO item.
+*@
+<TimezoneCard TimeZoneIdList="@_timezoneIdList"
+    OnCloseButtonClicked="(tzId) => { _timezoneIdList.Remove(tzId); }"></TimezoneCard>

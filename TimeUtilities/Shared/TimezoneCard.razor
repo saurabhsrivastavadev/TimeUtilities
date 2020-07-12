@@ -1,36 +1,41 @@
 ﻿@using CommonDateTimeUtils
 @using Microsoft.Extensions.Logging
 
-<div class="card text-white bg-info mb-3" style="max-width: 25rem;">
-    <div class="card-header container-fluid">
-        <div class="row">
-            <div class="col-md-10">
-                <h4>Timezone (@_localTzName)</h4>
-            </div>
-            <div class="col-md-2 float-right mt-1">
-                <button type="button" class="close" aria-label="Close"
-                        @onclick="OnCloseButtonClicked">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+@foreach (var tzInfo in _timeZoneInfoList)
+{
+    <div class="card text-white bg-info mb-3" style="max-width: 25rem;">
+        <div class="card-header container-fluid">
+            <div class="row">
+                <div class="col-md-10">
+                    <h4>Timezone (@tzInfo.DisplayName)</h4>
+                </div>
+                <div class="col-md-2 float-right mt-1">
+                    <button type="button" class="close" aria-label="Close"
+                            @onclick="() => { HandleCloseButtonClicked(tzInfo); }">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
             </div>
         </div>
+        <div class="card-body">
+            <h5 class="card-title">
+                @string.Format("{0:yyyy MMM dd, dddd}", GetTimeNowForTimeZone(tzInfo)) <br />
+                <b>@string.Format("{0:hh:mm:ss tt}", GetTimeNowForTimeZone(tzInfo))</b>
+            </h5>
+            <p class="card-text">
+                Timezone Name: <b>@tzInfo.DisplayName</b> <br />
+                Timezone Offset: <b>@GetTimeZoneOffsetString((int)tzInfo.BaseUtcOffset.TotalMinutes)</b> <br />
+                Day Number
+                <b>@GetTimeNowForTimeZone(tzInfo).DayOfYear /
+                        @DateTimeNow.GetDaysInYear(GetTimeNowForTimeZone(tzInfo).Year)</b>
+                            in @GetTimeNowForTimeZone(tzInfo).Year<br />
+                Week Number
+                <b>
+                    @DateTimeNow.GetWeekOfYear(GetTimeNowForTimeZone(tzInfo))
+                    / @DateTimeNow.GetWeeksInYear(GetTimeNowForTimeZone(tzInfo).Year)
+                </b>
+                in @GetTimeNowForTimeZone(tzInfo).Year<br />
+            </p>
+        </div>
     </div>
-    <div class="card-body">
-        <h5 class="card-title">
-            @string.Format("{0:yyyy MMM dd, dddd}", _localNow) <br />
-            <b>@string.Format("{0:hh:mm:ss tt}", _localNow)</b>
-        </h5>
-        <p class="card-text">
-            Timezone Name: <b>@_localTzName</b> <br />
-            Timezone Offset: <b>@LocalTzOffsetStr</b> <br />
-            Day Number
-            <b>@_localNow.DayOfYear / @DateTimeNow.GetDaysInYear(_localNow.Year)</b> in @_localNow.Year<br />
-            Week Number
-            <b>
-                @DateTimeNow.GetWeekOfYear(_localNow)
-                / @DateTimeNow.GetWeeksInYear(_localNow.Year)
-            </b>
-            in @_localNow.Year<br />
-        </p>
-    </div>
-</div>
+}
