@@ -37,7 +37,7 @@ namespace TimeUtilities.Pages
         private string _localTzName = "";
 
         // List of timezone card displayed in this page
-        private IList<string> _timezoneIdList = new List<string>();
+        private ISet<string> _timezoneIdList = new HashSet<string>();
 
         private string LocalTzOffsetStr
         {
@@ -72,7 +72,7 @@ namespace TimeUtilities.Pages
             // temp code to add some timezones
             _timezoneIdList =
                 TimeZoneInfo.GetSystemTimeZones().ToList().
-                    ConvertAll<string>((tz) => { return tz.DisplayName; }).GetRange(0,20);
+                    ConvertAll<string>((tz) => { return tz.DisplayName; }).GetRange(0,20).ToHashSet();
 
             await base.OnInitializedAsync();
         }
