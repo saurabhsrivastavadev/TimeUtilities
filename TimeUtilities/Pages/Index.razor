@@ -2,105 +2,93 @@
 
 @using CommonDateTimeUtils
 
-<div class="container-fluid">
+<div class="card-columns">
 
     @* First row containing the UTC and Local timezone cards *@
-    <div class="row">
-        <div class="col">
-            <div class="card text-white bg-dark mb-3" style="min-width: 20rem; max-width: 22rem;">
-                <div class="card-header">
-                    <h4>UTC Time</h4>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">
-                        @string.Format("{0:yyyy MMM dd, dddd}", _utcNow) <br />
-                        <b>@string.Format("{0:hh:mm:ss tt}", _utcNow)</b>
-                    </h5>
-                    <p class="card-text">
-                        <b>@((long)DateTimeNow.TimeSinceUtcEpoch.TotalSeconds)</b> seconds since UTC Epoch.<br />
-                        Day Number
-                        <b>@_utcNow.DayOfYear / @DateTimeNow.GetDaysInYear(_utcNow.Year)</b> in @_utcNow.Year<br />
-                        Week Number
-                        <b>
-                            @DateTimeNow.GetWeekOfYear(_utcNow)
-                            / @DateTimeNow.GetWeeksInYear(_utcNow.Year)
-                        </b>
-                        in @_utcNow.Year<br />
-                    </p>
-                </div>
-            </div>
+    <div class="card text-white bg-dark mb-3" style="min-width: 20rem; max-width: 22rem;">
+        <div class="card-header">
+            <h4>UTC Time</h4>
         </div>
-        <div class="col">
-            <div class="card text-white bg-success mb-3" style="min-width: 20rem; max-width: 23rem;">
-                <div class="card-header">
-                    <h4>Local Time (@_localTzName)</h4>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">
-                        @string.Format("{0:yyyy MMM dd, dddd}", _localNow) <br />
-                        <b>@string.Format("{0:hh:mm:ss tt}", _localNow)</b>
-                    </h5>
-                    <p class="card-text">
-                        Timezone Name: <b>@_localTzName</b> <br />
-                        Timezone Offset: <b>@LocalTzOffsetStr</b> <br />
-                        Day Number
-                        <b>@_localNow.DayOfYear / @DateTimeNow.GetDaysInYear(_localNow.Year)</b> in @_localNow.Year<br />
-                        Week Number
-                        <b>
-                            @DateTimeNow.GetWeekOfYear(_localNow)
-                            / @DateTimeNow.GetWeeksInYear(_localNow.Year)
-                        </b>
-                        in @_localNow.Year<br />
-                    </p>
-                </div>
-            </div>
+        <div class="card-body">
+            <h5 class="card-title">
+                @string.Format("{0:yyyy MMM dd, dddd}", _utcNow) <br />
+                <b>@string.Format("{0:hh:mm:ss tt}", _utcNow)</b>
+            </h5>
+            <p class="card-text">
+                <b>@((long)DateTimeNow.TimeSinceUtcEpoch.TotalSeconds)</b> seconds since UTC Epoch.<br />
+                Day Number
+                <b>@_utcNow.DayOfYear / @DateTimeNow.GetDaysInYear(_utcNow.Year)</b> in @_utcNow.Year<br />
+                Week Number
+                <b>
+                    @DateTimeNow.GetWeekOfYear(_utcNow)
+                    / @DateTimeNow.GetWeeksInYear(_utcNow.Year)
+                </b>
+                in @_utcNow.Year<br />
+            </p>
         </div>
-        <div class="col"></div>
     </div>
-
-    @* Second row containing all other dynamic cards *@
-    <div class="row">
-        @*
-            Performance metrics while using below for loop which creates a card component for each timezone.
-            Only 1.6 seconds idle in 21.5 seconds.
-            This is because of a large number of components that need to be rendered every time we update the
-            current time display for each timezone.
-                Range: 0 – 21.59 s
-                21590 ms
-                19191 msScripting
-                631 msRendering
-                74 msPainting
-                75 msSystem
-                1618 msIdle
-                21590 msTotal
-        *@
-        @*@foreach (var tz in _timezoneIdList)
-            {
-                <div class="col">
-                    <TimezoneCard TimeZoneId="@tz"
-                                  OnCloseButtonClicked="(tzId) => { _timezoneIdList.Remove(tzId); }"></TimezoneCard>
-                </div>
-            }*@
-
-        @*
-            Performance metrics when using a single component, which internally lists all the same timezones
-            as above.
-            This is much better than the above approach of having a list of components.
-            8.5 seconds idle in 21.1 seconds.
-                Range: 0 – 21.19 s
-                21193 ms
-                11782 msScripting
-                575 msRendering
-                68 msPainting
-                181 msSystem
-                8587 msIdle
-                21193 msTotal
-
-            However this approach is also not ideal and it also has large scripting time.
-            What we need is a way to dynamically render only the components currently being displayed on screen.
-            TODO item.
-        *@
-        <TimezoneCard TimeZoneIdList="@_timezoneIdList"
-                        OnCloseButtonClicked="(tzId) => { _timezoneIdList.Remove(tzId); }"></TimezoneCard>
+    <div class="card text-white bg-success mb-3" style="min-width: 20rem; max-width: 23rem;">
+        <div class="card-header">
+            <h4>Local Time (@_localTzName)</h4>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">
+                @string.Format("{0:yyyy MMM dd, dddd}", _localNow) <br />
+                <b>@string.Format("{0:hh:mm:ss tt}", _localNow)</b>
+            </h5>
+            <p class="card-text">
+                Timezone Name: <b>@_localTzName</b> <br />
+                Timezone Offset: <b>@LocalTzOffsetStr</b> <br />
+                Day Number
+                <b>@_localNow.DayOfYear / @DateTimeNow.GetDaysInYear(_localNow.Year)</b> in @_localNow.Year<br />
+                Week Number
+                <b>
+                    @DateTimeNow.GetWeekOfYear(_localNow)
+                    / @DateTimeNow.GetWeeksInYear(_localNow.Year)
+                </b>
+                in @_localNow.Year<br />
+            </p>
+        </div>
     </div>
 </div>
+
+@*
+    Performance metrics while using below for loop which creates a card component for each timezone.
+    Only 1.6 seconds idle in 21.5 seconds.
+    This is because of a large number of components that need to be rendered every time we update the
+    current time display for each timezone.
+        Range: 0 – 21.59 s
+        21590 ms
+        19191 msScripting
+        631 msRendering
+        74 msPainting
+        75 msSystem
+        1618 msIdle
+        21590 msTotal
+*@
+@*@foreach (var tz in _timezoneIdList)
+    {
+        <TimezoneCard TimeZoneId="@tz"
+                        OnCloseButtonClicked="(tzId) => { _timezoneIdList.Remove(tzId); }"></TimezoneCard>
+    }*@
+
+@*
+    Performance metrics when using a single component, which internally lists all the same timezones
+    as above.
+    This is much better than the above approach of having a list of components.
+    8.5 seconds idle in 21.1 seconds.
+        Range: 0 – 21.19 s
+        21193 ms
+        11782 msScripting
+        575 msRendering
+        68 msPainting
+        181 msSystem
+        8587 msIdle
+        21193 msTotal
+
+    However this approach is also not ideal and it also has large scripting time.
+    What we need is a way to dynamically render only the components currently being displayed on screen.
+    TODO item.
+*@
+<TimezoneCard TimeZoneIdList="@_timezoneIdList"
+                OnCloseButtonClicked="(tzId) => { _timezoneIdList.Remove(tzId); }"></TimezoneCard>
