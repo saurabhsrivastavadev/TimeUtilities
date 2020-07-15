@@ -1,6 +1,6 @@
 ﻿@page "/about"
 
-@using TimeUtilities.Jsinterop
+@using JsInteropUtils
 
 @inject IJSRuntime JSR
 
@@ -49,17 +49,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        JsInteropTimeUtils.JSR = JSR;
-        IsPwaInstalled = await JsInteropTimeUtils.Instance?.IsPwaInstalled();
+        JsInterop.JSR = JSR;
+        IsPwaInstalled = await JsInteropPwaUtils.Instance?.IsPwaInstalled();
     }
 
     private async Task InstallPwaButtonClick()
     {
-        IsPwaInstalled = await JsInteropTimeUtils.Instance?.IsPwaInstalled();
+        IsPwaInstalled = await JsInteropPwaUtils.Instance?.IsPwaInstalled();
 
         if (!IsPwaInstalled)
         {
-            JsInteropTimeUtils.Instance?.ShowPwaInstallPrompt();
+            JsInteropPwaUtils.Instance?.ShowPwaInstallPrompt();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CommonDateTimeUtils;
+using JsInteropUtils;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
@@ -9,7 +10,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using TimeUtilities.Jsinterop;
 
 namespace TimeUtilities.Pages
 {
@@ -24,7 +24,7 @@ namespace TimeUtilities.Pages
         {
             set
             {
-                JsInteropTimeUtils.JSR = value;
+                JsInterop.JSR = value;
             }
         }
 
