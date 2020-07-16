@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BlazorCommonUtils\JsInteropUtils\JsInteropUtils.csproj" />
-    <ProjectReference Include="..\..\DotNetStandardUtils\CommonDateTimeUtils\CommonDateTimeUtils.csproj" />
+    <ProjectReference Include="..\..\BlazorUtils\BlazorUtils.JsInterop\BlazorUtils.JsInterop.csproj" />
+    <ProjectReference Include="..\..\DotNetUtils\DotNetUtils.DateAndTime\DotNetUtils.DateAndTime.csproj" />
   </ItemGroup>
 
   <ItemGroup>

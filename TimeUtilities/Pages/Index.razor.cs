@@ -1,5 +1,5 @@
-﻿using CommonDateTimeUtils;
-using JsInteropUtils;
+﻿using DotNetUtils.DateAndTime;
+using BlazorUtils.JsInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
