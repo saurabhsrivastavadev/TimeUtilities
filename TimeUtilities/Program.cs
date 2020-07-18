@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using BlazorStrap;
 
 namespace TimeUtilities
 {
@@ -22,13 +21,12 @@ namespace TimeUtilities
             // Add root component
             builder.RootComponents.Add<App>("app");
 
-            // Add services 
+            // Add services
             builder.Services.AddTransient(sp => new HttpClient {
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
             });
-            builder.Services.AddBootstrapCss();
 
-            // Run the app 
+            // Run the app
             await builder.Build().RunAsync();
         }
     }
