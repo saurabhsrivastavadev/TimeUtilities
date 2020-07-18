@@ -31,4 +31,11 @@
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Watch Include="..\..\BlazorUtils\**\*"
+           Exclude="..\..\BlazorUtils\**\obj\**\*;..\..\BlazorUtils\**\bin\**\*" />
+    <Watch Include="..\..\DotNetUtils\**\*"
+           Exclude="..\..\DotNetUtils\**\obj\**\*;..\..\DotNetUtils\**\bin\**\*" />
+  </ItemGroup>
+
 </Project>
