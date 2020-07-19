@@ -1,13 +1,10 @@
-﻿using DotNetUtils.DateAndTime;
-using BlazorUtils.JsInterop;
+﻿using BlazorUtils.JsInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -28,7 +25,7 @@ namespace TimeUtilities.Pages
             }
         }
 
-        private readonly System.Timers.Timer _uiRefreshTimer = new System.Timers.Timer(250);
+        private readonly Timer _uiRefreshTimer = new Timer(250);
 
         // Fields
         private DateTime _utcNow;
@@ -69,11 +66,6 @@ namespace TimeUtilities.Pages
             _localTzOffset = await JsInteropTimeUtils.Instance?.GetLocalTimezoneOffset();
             _localTzName = await JsInteropTimeUtils.Instance?.GetLocalTimezoneName();
 
-            // temp code to add some timezones
-            _timezoneIdList =
-                TimeZoneInfo.GetSystemTimeZones().ToList().
-                    ConvertAll<string>((tz) => { return tz.DisplayName; }).GetRange(0,20).ToHashSet();
-
             await base.OnInitializedAsync();
         }
 
@@ -85,6 +77,12 @@ namespace TimeUtilities.Pages
 
             // update the UI
             this.StateHasChanged();
+        }
+
+        private void AddTimezonesCallback(ISet<string> timezoneIds)
+        {
+            Logger.LogInformation($"Adding {timezoneIds.Count} new timezones.");
+            _timezoneIdList.UnionWith(timezoneIds);
         }
     }
 }

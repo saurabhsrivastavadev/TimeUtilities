@@ -1,0 +1,46 @@
+﻿@* A Card to allow adding a new timezone to track. *@
+
+@using BlazorUtils.FormControls
+@using Microsoft.Extensions.Logging
+
+@inject ILogger<AddTimezoneCard> Logger;
+
+<div class="card text-white bg-success mb-3" style="min-width: 20rem; max-width: 25rem;">
+    <div class="card-header">
+        <h4>Add a new Timezone Card</h4>
+    </div>
+    <div class="card-body">
+        <h6 class="card-title">
+            Search for the timezone you would like to add.
+        </h6>
+        <Typeahead Placeholder="Type any part of a timezone name.."
+                   AllowOnlySuggestedValues="true"
+                   Suggestions="@_timezoneList"
+                   SubmitButtonText="Add the selected timezone/s"
+                   SubmitCallback="AddTimezoneCards"></Typeahead>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback<ISet<string>> TimezonesSelectedCb { get; set; }
+
+    private ISet<string> _timezoneList;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _timezoneList = TimeZoneInfo.GetSystemTimeZones().ToList().
+                ConvertAll<string>((tz) => { return tz.DisplayName; }).ToHashSet();
+    }
+
+    private void AddTimezoneCards(ISet<string> timezoneIds)
+    {
+        if (TimezonesSelectedCb.HasDelegate)
+        {
+            TimezonesSelectedCb.InvokeAsync(timezoneIds);
+        }
+    }
+}

@@ -21,18 +21,12 @@ namespace TimeUtilities.Shared
         [Parameter]
         public string TimeZoneId { get; set; }
 
-        private ISet<string> _timeZoneIdList = new HashSet<string>();
+        private ISet<string> _lastTimezoneIdList = new HashSet<string>();
         private ISet<TimeZoneInfo> _timeZoneInfoList = new HashSet<TimeZoneInfo>();
 
         protected override Task OnParametersSetAsync()
         {
             PopulateTimeZoneInfoList();
-
-            // Set the local tz name and offset
-            if (_timeZoneInfoList.Count == 0)
-            {
-                Logger.LogInformation("timezone list has 0 elements");
-            }
 
             return base.OnParametersSetAsync();
         }
@@ -62,15 +56,14 @@ namespace TimeUtilities.Shared
 
         private void PopulateTimeZoneInfoList()
         {
-            if (_timeZoneIdList.Count == TimeZoneIdList.Count &&
-                    _timeZoneIdList.Except(TimeZoneIdList).ToHashSet().Count == 0)
+            if (_lastTimezoneIdList.Count == TimeZoneIdList.Count &&
+                    _lastTimezoneIdList.Except(TimeZoneIdList).ToHashSet().Count == 0)
             {
                 return;
             }
-            else
-            {
-                _timeZoneIdList = TimeZoneIdList;
-            }
+
+            _lastTimezoneIdList.Clear();
+            _lastTimezoneIdList.UnionWith(TimeZoneIdList);
 
             _timeZoneInfoList.Clear();
 

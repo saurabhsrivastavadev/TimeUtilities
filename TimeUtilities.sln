@@ -14,6 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorUtils.JsInterop", "..
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetUtils.DateAndTime", "..\DotNetUtils\DotNetUtils.DateAndTime\DotNetUtils.DateAndTime.csproj", "{12339BB7-46A7-402E-B7C4-C00C71D4DBAE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorUtils.FormControls", "..\BlazorUtils\BlazorUtils.FormControls\BlazorUtils.FormControls.csproj", "{E5469DB8-0CD1-40A7-8BA4-78B5044E96E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{12339BB7-46A7-402E-B7C4-C00C71D4DBAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12339BB7-46A7-402E-B7C4-C00C71D4DBAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12339BB7-46A7-402E-B7C4-C00C71D4DBAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5469DB8-0CD1-40A7-8BA4-78B5044E96E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5469DB8-0CD1-40A7-8BA4-78B5044E96E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5469DB8-0CD1-40A7-8BA4-78B5044E96E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5469DB8-0CD1-40A7-8BA4-78B5044E96E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
