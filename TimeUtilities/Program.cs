@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using TimeUtilities.Services;
+using TimeUtilities.Services.Implementation;
+using BlazorUtils.JsInterop;
 
 namespace TimeUtilities
 {
@@ -25,6 +28,9 @@ namespace TimeUtilities
             builder.Services.AddTransient(sp => new HttpClient {
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
             });
+
+            // Jsinterop service
+            builder.Services.AddSingleton<IJsInteropService, JsInteropService>();
 
             // Run the app
             await builder.Build().RunAsync();

@@ -2,7 +2,7 @@
 
 @using BlazorUtils.JsInterop
 
-@inject IJSRuntime JSR
+@inject IJsInteropService JSR
 
 <h4>References</h4>
 <p><a href="https://en.wikipedia.org/wiki/ISO_8601">https://en.wikipedia.org/wiki/ISO_8601</a></p>
@@ -49,17 +49,16 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        JsInterop.JSR = JSR;
-        IsPwaInstalled = await JsInteropPwaUtils.Instance?.IsPwaInstalled();
+        IsPwaInstalled = await JSR.PwaUtils.IsPwaInstalled();
     }
 
     private async Task InstallPwaButtonClick()
     {
-        IsPwaInstalled = await JsInteropPwaUtils.Instance?.IsPwaInstalled();
+        IsPwaInstalled = await JSR.PwaUtils.IsPwaInstalled();
 
         if (!IsPwaInstalled)
         {
-            JsInteropPwaUtils.Instance?.ShowPwaInstallPrompt();
+            await JSR.PwaUtils.ShowPwaInstallPrompt();
         }
     }
 }

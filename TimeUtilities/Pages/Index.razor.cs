@@ -1,12 +1,12 @@
 ﻿using BlazorUtils.JsInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using TimeUtilities.Services;
 
 namespace TimeUtilities.Pages
 {
@@ -17,13 +17,7 @@ namespace TimeUtilities.Pages
         private ILogger<Index> Logger { get; set; }
 
         [Inject]
-        private IJSRuntime JSR
-        {
-            set
-            {
-                JsInterop.JSR = value;
-            }
-        }
+        private IJsInteropService JSR { get; set; }
 
         private readonly Timer _uiRefreshTimer = new Timer(250);
 
@@ -63,8 +57,8 @@ namespace TimeUtilities.Pages
             _uiRefreshTimer.Elapsed += TimerTick;
             _uiRefreshTimer.Start();
 
-            _localTzOffset = await JsInteropTimeUtils.Instance?.GetLocalTimezoneOffset();
-            _localTzName = await JsInteropTimeUtils.Instance?.GetLocalTimezoneName();
+            _localTzOffset = await JSR.TimeUtils.GetLocalTimezoneOffset();
+            _localTzName = await JSR.TimeUtils.GetLocalTimezoneName();
 
             await base.OnInitializedAsync();
         }
