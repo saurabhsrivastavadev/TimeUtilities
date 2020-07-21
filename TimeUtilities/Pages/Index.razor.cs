@@ -19,6 +19,9 @@ namespace TimeUtilities.Pages
         [Inject]
         private IJsInteropService JSR { get; set; }
 
+        [Inject]
+        private IStorageService SSR { get; set; }
+
         private readonly Timer _uiRefreshTimer = new Timer(250);
 
         // Fields
@@ -60,6 +63,10 @@ namespace TimeUtilities.Pages
             _localTzOffset = await JSR.TimeUtils.GetLocalTimezoneOffset();
             _localTzName = await JSR.TimeUtils.GetLocalTimezoneName();
 
+            // populate tracked timezones from local storage
+            _timezoneIdList.Clear();
+            _timezoneIdList.UnionWith(await SSR.GetTrackedTimezones());
+
             await base.OnInitializedAsync();
         }
 
@@ -73,10 +80,13 @@ namespace TimeUtilities.Pages
             this.StateHasChanged();
         }
 
-        private void AddTimezonesCallback(ISet<string> timezoneIds)
+        private async void AddTimezonesCallback(ISet<string> timezoneIds)
         {
             Logger.LogInformation($"Adding {timezoneIds.Count} new timezones.");
             _timezoneIdList.UnionWith(timezoneIds);
+
+            // save tracked timezones to local storage
+            await SSR.SaveTrackedTimezones(_timezoneIdList);
         }
     }
 }

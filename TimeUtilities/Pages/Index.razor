@@ -92,4 +92,8 @@
     TODO item.
 *@
 <TimezoneCard TimeZoneIdList="@_timezoneIdList"
-              OnCloseButtonClicked="(tzId) => { _timezoneIdList.Remove(tzId); }"></TimezoneCard>
+              OnCloseButtonClicked="async (tzId) =>
+                                    {
+                                        _timezoneIdList.Remove(tzId);
+                                        await SSR.SaveTrackedTimezones(_timezoneIdList);
+                                    }"></TimezoneCard>

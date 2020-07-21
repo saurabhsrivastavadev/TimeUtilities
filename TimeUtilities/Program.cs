@@ -32,6 +32,9 @@ namespace TimeUtilities
             // Jsinterop service
             builder.Services.AddSingleton<IJsInteropService, JsInteropService>();
 
+            // Storage service
+            builder.Services.AddSingleton<IStorageService, StorageService>();
+
             // Run the app
             await builder.Build().RunAsync();
         }
