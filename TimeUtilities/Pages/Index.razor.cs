@@ -65,7 +65,11 @@ namespace TimeUtilities.Pages
 
             // populate tracked timezones from local storage
             _timezoneIdList.Clear();
-            _timezoneIdList.UnionWith(await SSR.GetTrackedTimezones());
+            ISet<string> tt = await SSR.GetTrackedTimezones();
+            if (tt != null)
+            {
+                _timezoneIdList.UnionWith(await SSR.GetTrackedTimezones());
+            }
 
             await base.OnInitializedAsync();
         }

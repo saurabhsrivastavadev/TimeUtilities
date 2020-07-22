@@ -8,5 +8,6 @@ namespace TimeUtilities.Services
     {
         public Task SaveTrackedTimezones(ISet<string> timezoneIds);
         public Task<ISet<string>> GetTrackedTimezones();
+        public Task DeleteAllTrackedTimezones();
     }
 }

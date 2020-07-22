@@ -95,5 +95,12 @@
               OnCloseButtonClicked="async (tzId) =>
                                     {
                                         _timezoneIdList.Remove(tzId);
-                                        await SSR.SaveTrackedTimezones(_timezoneIdList);
+                                        if (_timezoneIdList.Count > 0)
+                                        {
+                                            await SSR.SaveTrackedTimezones(_timezoneIdList);
+                                        }
+                                        else
+                                        {
+                                            await SSR.DeleteAllTrackedTimezones();
+                                        }
                                     }"></TimezoneCard>

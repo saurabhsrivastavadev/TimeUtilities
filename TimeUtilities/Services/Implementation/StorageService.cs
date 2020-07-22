@@ -11,6 +11,8 @@ namespace TimeUtilities.Services.Implementation
 {
     internal class StorageService : IStorageService
     {
+        private const string TrackedTimezonesKey = "trackedTimezones";
+
         private ILogger Logger { get; set; }
         private IJsInteropService JSR { get; set; }
 
@@ -28,16 +30,43 @@ namespace TimeUtilities.Services.Implementation
                 return;
             }
 
-            await JSR.StorageUtils.LocalStorageSetItem(
-                "trackedTimezones", JsonSerializer.Serialize(timezoneIds));
+            try
+            {
+                await JSR.StorageUtils.LocalStorageSetItem(
+                    TrackedTimezonesKey, JsonSerializer.Serialize(timezoneIds));
+            }
+            catch
+            {
+                Logger.LogError("Failed to save to local storage.");
+            }
         }
 
         public async Task<ISet<string>> GetTrackedTimezones()
         {
-            string trackedTimezonesJson =
-                await JSR.StorageUtils.LocalStorageGetItem("trackedTimezones");
+            try
+            {
+                string trackedTimezonesJson =
+                    await JSR.StorageUtils.LocalStorageGetItem(TrackedTimezonesKey);
+                return JsonSerializer.Deserialize<ISet<string>>(trackedTimezonesJson);
+            }
+            catch
+            {
+                Logger.LogError("Failed to get from local storage.");
+            }
 
-            return JsonSerializer.Deserialize<ISet<string>>(trackedTimezonesJson);
+            return null;
+        }
+
+        public async Task DeleteAllTrackedTimezones()
+        {
+            try
+            {
+                await JSR.StorageUtils.LocalStorageDeleteItem(TrackedTimezonesKey);
+            }
+            catch
+            {
+                Logger.LogError("Failed to delete from local storage.");
+            }
         }
     }
 }
