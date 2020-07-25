@@ -1,15 +1,12 @@
 using System;
 using System.Net.Http;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using TimeUtilities.Services;
 using TimeUtilities.Services.Implementation;
 using BlazorUtils.JsInterop;
+using BlazorUtils.Firebase;
 
 namespace TimeUtilities
 {
@@ -34,6 +31,9 @@ namespace TimeUtilities
 
             // Storage service
             builder.Services.AddSingleton<IStorageService, StorageService>();
+
+            // Firebase auth
+            builder.Services.AddSingleton<IFirebaseGoogleAuthService, FirebaseGoogleAuthService>();
 
             // Run the app
             await builder.Build().RunAsync();

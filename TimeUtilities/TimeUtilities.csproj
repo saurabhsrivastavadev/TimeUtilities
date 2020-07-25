@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BlazorUtils\BlazorUtils.Firebase\BlazorUtils.Firebase.csproj" />
     <ProjectReference Include="..\..\BlazorUtils\BlazorUtils.JsInterop\BlazorUtils.JsInterop.csproj" />
     <ProjectReference Include="..\..\DotNetUtils\DotNetUtils.DateAndTime\DotNetUtils.DateAndTime.csproj" />
     <ProjectReference Include="..\..\BlazorUtils\BlazorUtils.FormControls\BlazorUtils.FormControls.csproj" />
