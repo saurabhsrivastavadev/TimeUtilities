@@ -7,6 +7,7 @@ using TimeUtilities.Services;
 using TimeUtilities.Services.Implementation;
 using BlazorUtils.JsInterop;
 using BlazorUtils.Firebase;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace TimeUtilities
 {
@@ -14,8 +15,6 @@ namespace TimeUtilities
     {
         public static async Task Main(string[] args)
         {
-            Console.WriteLine("Main() Entry");
-
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
             // Add root component
@@ -32,8 +31,13 @@ namespace TimeUtilities
             // Storage service
             builder.Services.AddSingleton<IStorageService, StorageService>();
 
+            // Services for enabling Authentication
+            builder.Services.AddOptions();
+            builder.Services.AddAuthorizationCore();
+
             // Firebase auth
-            builder.Services.AddSingleton<IFirebaseGoogleAuthService, FirebaseGoogleAuthService>();
+            builder.Services.AddScoped<IFirebaseGoogleAuthService, FirebaseGoogleAuthService>();
+            builder.Services.AddScoped<AuthenticationStateProvider, FirebaseGoogleAuthService>();
 
             // Run the app
             await builder.Build().RunAsync();

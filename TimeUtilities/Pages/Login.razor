@@ -1,0 +1,38 @@
+﻿@page "/login"
+
+@using BlazorUtils.Firebase
+@using Microsoft.Extensions.Logging
+@using System.Text.Json
+@using System.Security.Claims
+
+@inject IFirebaseGoogleAuthService GoogleAuth
+@inject ILogger<Login> Logger
+
+<AuthorizeView>
+    <Authorized>
+        <h4>You are signed in !</h4>
+        <br/>
+        <p>@context.User.FindFirst(ClaimTypes.Name).Value</p>
+        <p>@context.User.FindFirst(ClaimTypes.Email).Value</p>
+        <br/>
+        <button class="btn btn-info" @onclick="TriggerSignOut">Sign Out</button>
+    </Authorized>
+    <NotAuthorized>
+        <h4>You are not signed in.</h4>
+        <br/>
+        <button class="btn btn-info" @onclick="TriggerSignIn">Sign In</button>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    private async void TriggerSignIn()
+    {
+        await GoogleAuth.SignInWithPopup(new HashSet<string>());
+    }
+
+    private async void TriggerSignOut()
+    {
+        await GoogleAuth.SignOut();
+    }
+}
