@@ -36,8 +36,11 @@ namespace TimeUtilities
             builder.Services.AddAuthorizationCore();
 
             // Firebase auth
-            builder.Services.AddScoped<IFirebaseGoogleAuthService, FirebaseGoogleAuthService>();
-            builder.Services.AddScoped<AuthenticationStateProvider, FirebaseGoogleAuthService>();
+            builder.Services.AddScoped<FirebaseGoogleAuthService>();
+            builder.Services.AddScoped<IFirebaseGoogleAuthService>(
+                provider => provider.GetRequiredService<FirebaseGoogleAuthService>());
+            builder.Services.AddScoped<AuthenticationStateProvider>(
+                provider => provider.GetRequiredService<FirebaseGoogleAuthService>());
 
             // Run the app
             await builder.Build().RunAsync();
