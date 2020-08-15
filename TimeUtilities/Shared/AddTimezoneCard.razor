@@ -26,14 +26,18 @@
     [Parameter]
     public EventCallback<ISet<string>> TimezonesSelectedCb { get; set; }
 
-    private ISet<string> _timezoneList;
+    private ISet<string> _timezoneList = new HashSet<string>();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
 
-        _timezoneList = TimeZoneInfo.GetSystemTimeZones().ToList().
-                ConvertAll<string>((tz) => { return tz.DisplayName; }).ToHashSet();
+        // This operation takes time, so don't block on it
+        _timezoneList = await Task<ISet<string>>.Run(() => {
+            return TimeZoneInfo.GetSystemTimeZones().ToList().
+                    ConvertAll<string>((tz) => { return tz.DisplayName; }).ToHashSet();
+
+        });
     }
 
     private void AddTimezoneCards(ISet<string> timezoneIds)
