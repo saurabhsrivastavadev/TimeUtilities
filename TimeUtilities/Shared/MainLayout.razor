@@ -1,15 +1,39 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="sidebar">
-    <NavMenu />
+    <NavMenu @bind-CollapseNavMenu="_isNavMenuCollapsed" />
 </div>
 
-<div class="main">
-    @*<div class="top-row px-4">
-        <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
-    </div>*@
-
+<div class="main"
+     @ontouchstart="HandleTouchStart"
+     @ontouchend="HandleTouchEnd">
     <div class="content px-4">
         @Body
     </div>
 </div>
+
+@code
+{
+    private bool _isNavMenuCollapsed = true;
+    private double _touchStartClientX = 0;
+
+    private void HandleTouchStart(TouchEventArgs args)
+    {
+        _touchStartClientX = args.ChangedTouches[0].ClientX;
+    }
+
+    private void HandleTouchEnd(TouchEventArgs args)
+    {
+        double touchEndClientX = args.ChangedTouches[0].ClientX;
+        double touchDelta = touchEndClientX - _touchStartClientX;
+
+        if (touchDelta > 100)
+        {
+            _isNavMenuCollapsed = false;
+        }
+        if (touchDelta < -100)
+        {
+            _isNavMenuCollapsed = true;
+        }
+    }
+}

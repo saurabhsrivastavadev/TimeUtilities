@@ -46,12 +46,18 @@
 </div>
 
 @code {
-    private bool collapseNavMenu = true;
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    [Parameter]
+    public bool CollapseNavMenu { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> CollapseNavMenuChanged { get; set; }
+
+    private string NavMenuCssClass => CollapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
     {
-        collapseNavMenu = !collapseNavMenu;
+        CollapseNavMenu = !CollapseNavMenu;
+        CollapseNavMenuChanged.InvokeAsync(CollapseNavMenu);
     }
 }
