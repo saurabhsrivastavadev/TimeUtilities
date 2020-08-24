@@ -10,14 +10,21 @@
         <h4>Add a new Timezone Card</h4>
     </div>
     <div class="card-body">
-        <h6 class="card-title">
-            Search for the timezone you would like to add.
-        </h6>
-        <Typeahead Placeholder="Type any part of a timezone name.."
-                   AllowOnlySuggestedValues="true"
-                   Suggestions="@_timezoneList"
-                   SubmitButtonText="Add the selected timezone/s"
-                   SubmitCallback="AddTimezoneCards"></Typeahead>
+        @if (_timezonesLoaded)
+        {
+            <h6 class="card-title">
+                Search for the timezone you would like to add.
+            </h6>
+            <Typeahead Placeholder="Type any part of a timezone name.."
+                       AllowOnlySuggestedValues="true"
+                       @bind-Suggestions="_timezoneList"
+                       SubmitButtonText="Add the selected timezone/s"
+                       SubmitCallback="AddTimezoneCards"></Typeahead>
+        }
+        else
+        {
+            <button class="btn btn-info" @onclick="LoadTimezones">@_loadButtonText</button>
+        }
     </div>
 </div>
 
@@ -28,15 +35,19 @@
 
     private ISet<string> _timezoneList = new HashSet<string>();
 
-    protected override async Task OnInitializedAsync()
+    private bool _timezonesLoaded = false;
+    private string _loadButtonText = "Load the timezones to search";
+
+    private async Task LoadTimezones()
     {
-        await base.OnInitializedAsync();
+        _loadButtonText = "Loading..";
 
         // This operation takes time, so don't block on it
-        _timezoneList = await Task<ISet<string>>.Run(() => {
-            return TimeZoneInfo.GetSystemTimeZones().ToList().
+        await Task<ISet<string>>.Run(() =>
+        {
+            _timezoneList = TimeZoneInfo.GetSystemTimeZones().ToList().
                     ConvertAll<string>((tz) => { return tz.DisplayName; }).ToHashSet();
-
+            _timezonesLoaded = true;
         });
     }
 
