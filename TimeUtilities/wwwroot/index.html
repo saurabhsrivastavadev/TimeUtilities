@@ -30,8 +30,6 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-    <script src="_framework/blazor.webassembly.js"></script>
-    <script>navigator.serviceWorker.register('service-worker.js');</script>
 
     <script src="_content/BlazorUtils.JsInterop/jsinterop.js"></script>
 
@@ -44,8 +42,11 @@
     <!-- Initialize Firebase -->
     <script src="/__/firebase/init.js"></script>
     <!-- Firebase setup :: end -->
-
+    <!-- Firebase Authentication -->
     <script src="_content/BlazorUtils.Firebase/auth.js"></script>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
 
 </body>
 
