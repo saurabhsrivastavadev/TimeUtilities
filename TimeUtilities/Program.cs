@@ -42,6 +42,9 @@ namespace TimeUtilities
             builder.Services.AddScoped<AuthenticationStateProvider>(
                 provider => provider.GetRequiredService<FirebaseGoogleAuthService>());
 
+            // Firestore service
+            builder.Services.AddSingleton<IFirestoreService, FirestoreService>();
+
             // Run the app
             await builder.Build().RunAsync();
         }
