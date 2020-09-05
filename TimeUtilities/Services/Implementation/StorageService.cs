@@ -1,4 +1,5 @@
-﻿using BlazorUtils.JsInterop;
+﻿using BlazorUtils.Firebase;
+using BlazorUtils.JsInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,11 +16,24 @@ namespace TimeUtilities.Services.Implementation
 
         private ILogger Logger { get; set; }
         private IJsInteropService JSR { get; set; }
+        private IFirebaseGoogleAuthService AuthService { get; set; }
+        private IFirestoreService FirestoreService { get; set; }
 
-        public StorageService(ILogger<StorageService> logger, IJsInteropService jsInteropService)
+        public StorageService(
+            ILogger<StorageService> logger, IJsInteropService jsInteropService,
+            IFirebaseGoogleAuthService authService, IFirestoreService firestoreService)
         {
             Logger = logger;
             JSR = jsInteropService;
+            AuthService = authService;
+            FirestoreService = firestoreService;
+        }
+
+        private class UserDocument : IFirestoreService.IFirestoreDocument
+        {
+            public IFirestoreService.FirestoreDocRef DocRef { get; set; }
+
+            public ISet<string> TrackedTimezoneIds { get; set; }
         }
 
         public async Task SaveTrackedTimezones(ISet<string> timezoneIds)
@@ -30,12 +44,28 @@ namespace TimeUtilities.Services.Implementation
                 return;
             }
 
+            // Save to firestore
+            var user = await AuthService.GetCurrentUser();
+            if (user != null)
+            {
+                // Collection
+                string collection = "users";
+                string docId = user.uid;
+                UserDocument doc = new UserDocument() { TrackedTimezoneIds = timezoneIds };
+
+                FirestoreOperationResult<UserDocument> result =
+                    await FirestoreService.UpdateDocument<UserDocument, UserDocument>(collection, docId, doc);
+                Logger.LogInformation($"Doc save result: {result.Success}");
+            }
+
+            // Let's save to local storage as well
+            // We will retrieve this if user is not signed in
             try
             {
                 await JSR.StorageUtils.LocalStorageSetItem(
                     TrackedTimezonesKey, JsonSerializer.Serialize(timezoneIds));
             }
-            catch
+            catch(Exception)
             {
                 Logger.LogError("Failed to save to local storage.");
             }
@@ -43,15 +73,35 @@ namespace TimeUtilities.Services.Implementation
 
         public async Task<ISet<string>> GetTrackedTimezones()
         {
-            try
+            // Get from firestore
+            var user = await AuthService.GetCurrentUser();
+            if (user != null)
             {
-                string trackedTimezonesJson =
-                    await JSR.StorageUtils.LocalStorageGetItem(TrackedTimezonesKey);
-                return JsonSerializer.Deserialize<ISet<string>>(trackedTimezonesJson);
+                // Collection
+                string collection = "users";
+                string docId = user.uid;
+
+                FirestoreOperationResult<UserDocument> result =
+                    await FirestoreService.GetDocument<UserDocument>(collection, docId);
+                Logger.LogInformation($"Doc get result: {result.Success}");
+
+                if (result.Success && result.Document != null)
+                {
+                    return result.Document.TrackedTimezoneIds;
+                }
             }
-            catch
+            else
             {
-                Logger.LogError("Failed to get from local storage.");
+                try
+                {
+                    string trackedTimezonesJson =
+                        await JSR.StorageUtils.LocalStorageGetItem(TrackedTimezonesKey);
+                    return JsonSerializer.Deserialize<ISet<string>>(trackedTimezonesJson);
+                }
+                catch (Exception)
+                {
+                    Logger.LogError("Failed to get from local storage.");
+                }
             }
 
             return null;
@@ -63,9 +113,23 @@ namespace TimeUtilities.Services.Implementation
             {
                 await JSR.StorageUtils.LocalStorageDeleteItem(TrackedTimezonesKey);
             }
-            catch
+            catch(Exception)
             {
                 Logger.LogError("Failed to delete from local storage.");
+            }
+
+            // Save to firestore
+            var user = await AuthService.GetCurrentUser();
+            if (user != null)
+            {
+                // Collection
+                string collection = "users";
+                string docId = user.uid;
+                UserDocument doc = new UserDocument();
+
+                FirestoreOperationResult<UserDocument> result =
+                    await FirestoreService.UpdateDocument<UserDocument, UserDocument>(collection, docId, doc);
+                Logger.LogInformation($"Doc save result: {result.Success}");
             }
         }
     }
