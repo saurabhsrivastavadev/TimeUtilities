@@ -1,22 +1,9 @@
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData"
+            <RouteView RouteData="@routeData"
                                 DefaultLayout="@typeof(MainLayout)">
-                <NotAuthorized>
-                    @if (context.User == null || context.User.Identity == null ||
-                               !context.User.Identity.IsAuthenticated)
-                    {
-                        <h4>You need to be signed in to access this section.</h4>
-                        <br/>
-                        <TimeUtilities.Pages.Login></TimeUtilities.Pages.Login>
-                    }
-                    else
-                    {
-                        <h4>You are not authorized to access this resource.</h4>
-                    }
-                </NotAuthorized>
-            </AuthorizeRouteView>
+            </RouteView>
         </Found>
         <NotFound>
             <LayoutView Layout="@typeof(MainLayout)">

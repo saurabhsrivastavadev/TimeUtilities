@@ -1,4 +1,5 @@
-﻿using BlazorUtils.JsInterop;
+﻿using BlazorUtils.Firebase;
+using BlazorUtils.JsInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using System;
@@ -21,6 +22,9 @@ namespace TimeUtilities.Pages
 
         [Inject]
         private IStorageService SSR { get; set; }
+
+        [Inject]
+        private IFirebaseGoogleAuthService AuthService { get; set; }
 
         private readonly Timer _uiRefreshTimer = new Timer(250);
 
@@ -63,15 +67,25 @@ namespace TimeUtilities.Pages
             _localTzOffset = await JSR.TimeUtils.GetLocalTimezoneOffset();
             _localTzName = await JSR.TimeUtils.GetLocalTimezoneName();
 
-            // populate tracked timezones from local storage
+            await PopulateTrackedTimezones();
+
+            AuthService.AuthStateChangedCallback += async _ =>
+            {
+                await PopulateTrackedTimezones();
+                this.StateHasChanged();
+            };
+
+            await base.OnInitializedAsync();
+        }
+
+        private async Task PopulateTrackedTimezones()
+        {
             _timezoneIdList.Clear();
             ISet<string> tt = await SSR.GetTrackedTimezones();
             if (tt != null)
             {
                 _timezoneIdList.UnionWith(await SSR.GetTrackedTimezones());
             }
-
-            await base.OnInitializedAsync();
         }
 
         private void TimerTick(object sender, ElapsedEventArgs args)
