@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using TimeUtilities.Services;
-using TimeUtilities.Services.Implementation;
 using BlazorUtils.JsInterop;
 using BlazorUtils.Firebase;
 using Microsoft.AspNetCore.Components.Authorization;

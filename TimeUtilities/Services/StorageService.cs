@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using static BlazorUtils.Firebase.FirebaseGoogleAuthResult;
 using static TimeUtilities.Services.IStorageService;
 
-namespace TimeUtilities.Services.Implementation
+namespace TimeUtilities.Services
 {
     internal class StorageService : IStorageService
     {
@@ -42,8 +42,19 @@ namespace TimeUtilities.Services.Implementation
                     {
                         FirestoreOperationResult<UserDocument> res =
                             await FirestoreService.SubscribeForDocumentUpdates<UserDocument>(
-                                "users", user.uid,  _ =>
+                                "users", user.uid,  async document =>
                                 {
+                                    // Update local storage with firestore content
+                                    UserDocument userDoc = document as UserDocument;
+                                    if (userDoc.TrackedTimezoneIds == null || userDoc.TrackedTimezoneIds.Count == 0)
+                                    {
+                                        await DeleteAllTrackedTimezones();
+                                    }
+                                    else
+                                    {
+                                        await SaveTrackedTimezones(userDoc.TrackedTimezoneIds);
+                                    }
+
                                     TrackedTimezoneListUpdateCallback.Invoke();
                                 });
 

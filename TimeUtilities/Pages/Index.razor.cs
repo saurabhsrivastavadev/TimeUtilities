@@ -80,11 +80,14 @@ namespace TimeUtilities.Pages
 
         private async Task PopulateTrackedTimezones()
         {
-            _timezoneIdList.Clear();
             ISet<string> tt = await SSR.GetTrackedTimezones();
-            if (tt != null)
+            if (tt != null && !_timezoneIdList.SetEquals(tt))
             {
-                _timezoneIdList.UnionWith(await SSR.GetTrackedTimezones());
+                _timezoneIdList.Clear();
+                if (tt != null)
+                {
+                    _timezoneIdList.UnionWith(await SSR.GetTrackedTimezones());
+                }
             }
         }
 
