@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using static BlazorUtils.Firebase.FirebaseGoogleAuthResult;
+using static TimeUtilities.Services.IStorageService;
 
 namespace TimeUtilities.Services.Implementation
 {
@@ -19,6 +21,9 @@ namespace TimeUtilities.Services.Implementation
         private IFirebaseGoogleAuthService AuthService { get; set; }
         private IFirestoreService FirestoreService { get; set; }
 
+        private bool _subscribedForDocUpdates;
+        public TrackedTimezoneListUpdateCallbackType TrackedTimezoneListUpdateCallback { get; set; }
+
         public StorageService(
             ILogger<StorageService> logger, IJsInteropService jsInteropService,
             IFirebaseGoogleAuthService authService, IFirestoreService firestoreService)
@@ -27,6 +32,33 @@ namespace TimeUtilities.Services.Implementation
             JSR = jsInteropService;
             AuthService = authService;
             FirestoreService = firestoreService;
+
+            AuthService.AuthStateChangedCallback += async (GoogleAuthUser user) =>
+            {
+                if (user != null)
+                {
+                    // signed in
+                    if (!_subscribedForDocUpdates)
+                    {
+                        FirestoreOperationResult<UserDocument> res =
+                            await FirestoreService.SubscribeForDocumentUpdates<UserDocument>(
+                                "users", user.uid,  _ =>
+                                {
+                                    TrackedTimezoneListUpdateCallback.Invoke();
+                                });
+
+                        if (res.Success)
+                        {
+                            Logger.LogInformation("Subscribed for timezone list updates.");
+                            _subscribedForDocUpdates = true;
+                        }
+                        else
+                        {
+                            Logger.LogError("Failed to subscribe for timezone list updates.");
+                        }
+                    }
+                }
+            };
         }
 
         private class UserDocument : IFirestoreService.IFirestoreDocument

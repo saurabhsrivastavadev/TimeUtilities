@@ -69,7 +69,7 @@ namespace TimeUtilities.Pages
 
             await PopulateTrackedTimezones();
 
-            AuthService.AuthStateChangedCallback += async _ =>
+            SSR.TrackedTimezoneListUpdateCallback += async () =>
             {
                 await PopulateTrackedTimezones();
                 this.StateHasChanged();
