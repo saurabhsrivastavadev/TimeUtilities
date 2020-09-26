@@ -1,0 +1,67 @@
+@page "/trivia"
+
+@using DotNetUtils.DateAndTime
+
+<div class="card-columns">
+    <div class="card bg-light mb-3" style="min-width: 20rem; max-width: 23rem;">
+        <div class="card-body">
+            <h5 class="card-title">UTC Time</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Coordinated Universal Time</h6>
+            <p style="font-size:small;">
+                "UTC is the time-scale maintained by the BIPM, with assistance from the IERS, which forms the
+                basis of a coordinated dissemination of standard frequencies and time signals. It corresponds
+                exactly in rate with TAI but differs from it by an integer number of seconds.
+                The UTC scale is adjusted by the insertion or deletion of seconds (positive or negative leapseconds) to ensure approximate agreement with UT1."
+            </p>
+            <a style="font-size:small;" href="https://www.itu.int/dms_pubrec/itu-r/rec/tf/R-REC-TF.460-6-200202-I!!PDF-E.pdf" class="card-link">
+                https://www.itu.int/dms_pubrec/itu-r/rec/tf/R-REC-TF.460-6-200202-I!!PDF-E.pdf
+            </a>
+        </div>
+    </div>
+    <div class="card bg-light mb-3" style="min-width: 20rem; max-width: 23rem;">
+        <div class="card-body">
+            <h5 class="card-title">GMT Time</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Greenwich Mean Time</h6>
+            <p style="font-size:small;">
+                "Weather observations around the world (including surface, radar, and other observations) are always taken with respect to a standard time. By convention, the world's weather communities use a twenty four hour clock, similar to "military" time based on the 0 degree longitude meridian, also known as the Greenwich meridian.
+                Prior to 1972, this time was called Greenwich Mean Time (GMT) but is now referred to as Coordinated Universal Time or Universal Time Coordinated (UTC). It is a coordinated time scale, maintained by the Bureau International des Poids et Mesures (BIPM). It is also known as "Z time" or "Zulu Time"."
+            </p>
+            <a style="font-size:small;" href="https://www.nhc.noaa.gov/aboututc.shtml" class="card-link">
+                https://www.nhc.noaa.gov/aboututc.shtml
+            </a>
+        </div>
+    </div>
+    <div class="card bg-light mb-3" style="min-width: 20rem; max-width: 23rem;">
+        <div class="card-body">
+            <h5 class="card-title">GPS Epoch</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Zero time point for GPS</h6>
+            <p class="card-text">@string.Format("{0:yyyy MMM dd, hh:mm:ss tt}", DateTimeConstants.GpsEpoch)</p>
+            <p style="font-size:small;">
+                "GPS time is established by the Control Segment and is
+                referenced to Coordinated Universal Time (UTC) as maintained by the U.S. Naval Observatory
+                (UTC (USNO)) zero time-point defined as midnight on the night of January 5, 1980/morning of
+                January 6, 1980. The largest unit used in stating GPS time is one week defined as 604,800
+                seconds. GPS time may differ from UTC because GPS time shall be a continuous time scale,
+                while UTC is corrected periodically with an integer number of leap seconds."
+            </p>
+            <a style="font-size:small;" href="https://www.gps.gov/technical/icwg/IS-GPS-200G.pdf" class="card-link">
+                https://www.gps.gov/technical/icwg/IS-GPS-200G.pdf
+            </a>
+        </div>
+    </div>
+    <div class="card bg-light mb-3" style="min-width: 20rem; max-width: 23rem;">
+        <div class="card-body">
+            <h5 class="card-title">Unix Epoch</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Zero time point for Unix</h6>
+            <p class="card-text">@string.Format("{0:yyyy MMM dd, hh:mm:ss tt}", DateTime.UnixEpoch)</p>
+            <p style="font-size:small;">
+                "Historically, the origin of UNIX system time was referred to as "00:00:00 GMT, January 1, 1970".
+                Greenwich Mean Time is actually not a term acknowledged by the international standards community;
+                therefore, this term, "Epoch", is used to abbreviate the reference to the actual standard, Coordinated Universal Time."
+            </p>
+            <a style="font-size:small;" href="https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap03.html#tag_21_03_00_20" class="card-link">
+                https://pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap03.html#tag_21_03_00_20
+            </a>
+        </div>
+    </div>
+</div>

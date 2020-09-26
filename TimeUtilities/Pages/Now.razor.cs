@@ -11,7 +11,7 @@ using TimeUtilities.Services;
 
 namespace TimeUtilities.Pages
 {
-    public partial class Index
+    public partial class Now
     {
         // Framework Injections
         [Inject]
@@ -88,6 +88,10 @@ namespace TimeUtilities.Pages
                 {
                     _timezoneIdList.UnionWith(await SSR.GetTrackedTimezones());
                 }
+            }
+            else if (tt == null)
+            {
+                _timezoneIdList.Clear();
             }
         }
 
