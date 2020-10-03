@@ -1,8 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="sidebar">
-    <NavMenu @bind-CollapseNavMenu="_isNavMenuCollapsed" />
-</div>
+<NavMenu @bind-CollapseNavMenu="_isNavMenuCollapsed" />
 
 <div class="main"
      @ontouchstart="HandleTouchStart"
