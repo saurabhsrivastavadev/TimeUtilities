@@ -1,13 +1,17 @@
 ﻿
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="">TimeUtilities</a>
+    <a class="navbar-brand" href="">
+        <img src="hourglass.png" width="25" height="25" class="d-inline-block align-top png-color-white">
+        TimeUtilities
+    </a>
+    <div class="vert-line"></div>
     <button class="navbar-toggler" type="button" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="@NavMenuCssClass navbar-collapse"
          id="navbarSupportedContent" @onclick="ToggleNavMenu">
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav mr-auto" id="nav-items-list">
             <li class="nav-item">
                 <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                     <span class="oi oi-timer" aria-hidden="true"></span> Now

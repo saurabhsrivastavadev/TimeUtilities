@@ -181,4 +181,19 @@ app {
         /* Never collapse the sidebar for wide screens */
         display: block;
     }
+
+    .vert-line {
+        border-left: 4px solid green;
+        margin-right: 10px;
+        height: 2.5em;
+    }
+}
+
+/* https://stackoverflow.com/questions/7415872/change-color-of-png-image-via-css */
+.png-color-white {
+    filter: invert(99%) sepia(99%) saturate(2%) hue-rotate(127deg) brightness(107%) contrast(101%);
+}
+
+#nav-items-list li {
+    margin-left: 10px;
 }
